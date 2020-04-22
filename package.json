@@ -1,0 +1,58 @@
+{
+	"name": "cattlechainclient",
+	"version": "0.0.1",
+	"description": "Fiware",
+	"engines": {
+		"node": "10.x"
+	},
+	"scripts": {
+		"postinstall": "rm -rf dist && mkdir dist && npx babel src --out-dir dist",
+		"start": "cd dist && node server.js",
+		"dev": "npm run postinstall && npm start",
+		"watch": "babel-watch src/server.js",
+		"test": "npm run postinstall && mocha --timeout 10000 --exit",
+		"build": "npm run postinstall"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+"
+	},
+	"keywords": [
+		"npm",
+		"node",
+		"javascript",
+		"iota",
+		"fiware"
+	],
+	"author": "Har Preet Singh <harpreet.singh@fiware.org>",
+	"license": "MIT",
+	"bugs": {
+		"url": "http://"
+	},
+	"homepage": "",
+	"dependencies": {
+		"bcrypt": "^3.0.7",
+		"body-parser": "^1.18.3",
+		"cbor": "^5.0.2",
+		"chalk": "^2.4.1",
+		"compression": "^1.7.3",
+		"cors": "^2.8.4",
+		"crypto": "^1.0.1",
+		"ejs": "^2.7.4",
+		"express": "^4.16.3",
+		"http-status-codes": "^1.4.0",
+		"mosca": "^2.8.3",
+		"request": "^2.88.2",
+		"sawtooth-sdk": "^1.0.5",
+		"cattlechain-proto": "git+https://c775269f59d8f78cb46c0756a9d242a3a5076e70:x-oauth-basic@github.com/singhhp1069/FIWARE_Cattlechain_Protos.git"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.3",
+		"babel-preset-env": "^1.7.0",
+		"babel-watch": "^2.0.7",
+		"chai": "^4.2.0",
+		"chai-http": "^4.3.0",
+		"mocha": "^6.2.2"
+	}
+}
