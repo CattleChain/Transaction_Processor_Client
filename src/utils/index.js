@@ -1,5 +1,6 @@
 const { animalIdentity_pb } = require('cattlechain-proto');
 
+
 function wrapAsync(fn) {
 	return function(req, res, next) {
 		fn(req, res, next).catch(e => {
