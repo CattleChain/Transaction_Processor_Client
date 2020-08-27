@@ -33,6 +33,7 @@
 	"dependencies": {
 		"bcrypt": "^3.0.7",
 		"body-parser": "^1.18.3",
+		"cattlechain-proto": "git+https://c775269f59d8f78cb46c0756a9d242a3a5076e70:x-oauth-basic@github.com/singhhp1069/FIWARE_Cattlechain_Protos.git",
 		"cbor": "^5.0.2",
 		"chalk": "^2.4.1",
 		"compression": "^1.7.3",
@@ -42,9 +43,11 @@
 		"express": "^4.16.3",
 		"http-status-codes": "^1.4.0",
 		"mosca": "^2.8.3",
+		"pg": "^8.3.2",
+		"pg-hstore": "^2.3.3",
 		"request": "^2.88.2",
 		"sawtooth-sdk": "^1.0.5",
-		"cattlechain-proto": "git+https://c775269f59d8f78cb46c0756a9d242a3a5076e70:x-oauth-basic@github.com/singhhp1069/FIWARE_Cattlechain_Protos.git"
+		"sequelize": "^6.3.4"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",

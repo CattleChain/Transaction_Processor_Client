@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import compression from 'compression';
 const { config } = require('./config');
+import { Transactions } from './model/transaction';
 
 const api = express();
 
