@@ -17,7 +17,8 @@ const signer = new CryptoFactory(context).newSigner(privateKey)
 const status = async (req, res) => { res.status(HttpStatus.OK).send({success: 'working'});}
 
 const CreateAnimalIdentity = async (req, res) => {
-	let payload = req.body;
+	let payload = req.body.data[0];
+	console.log(payload);
 	let animal = new animalIdentity_pb.AnimalIdentity();
 	let location = new animalIdentity_pb.AnimalIdentity.LOCATION();
 	if(!isNotEmpty(payload.id)) {
@@ -119,10 +120,11 @@ const CreateAnimalIdentity = async (req, res) => {
 		headers: { 'Content-Type': 'application/octet-stream' }
 	}, (err, response) => {
 		if (err) {
+			console.log(err);
 			res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({Error: err});
 		}
-		Transactions.create({'id': payload.id, 'txHash': response.body}).then((res) => {
-			res.status(HttpStatus.CREATED).send({success: JSON.parse(response.body)});	
+		Transactions.create({'id': payload.id, 'txHash': JSON.stringify(response.body)}).then((res) => {
+			res.status(HttpStatus.NO_CONTENT).send({success: JSON.parse(response.body)});	
 		})
 	});
 }
