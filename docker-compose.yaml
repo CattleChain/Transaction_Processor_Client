@@ -13,7 +13,7 @@ services:
       - SAWTOOTH_REST_ENDPOINT=http://46.17.108.38:8008
       - TP_FAMILY='CattleChain'
       - TP_VERSION='0.0.2'
-      - TP_NAMESPACE='ebc4f9'
+      - TP_NAMESPACE='08908d'
       - DB_NAME=cattlechain
       - DB_USER=postgres
       - DB_PASSWORD=root
