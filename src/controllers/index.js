@@ -18,7 +18,6 @@ const status = async (req, res) => { res.status(HttpStatus.OK).send({success: 'w
 
 const CreateAnimalIdentity = async (req, res) => {
 	let payload = req.body.data[0];
-	console.log(payload);
 	let animal = new animalIdentity_pb.AnimalIdentity();
 	let location = new animalIdentity_pb.AnimalIdentity.LOCATION();
 	if(!isNotEmpty(payload.id)) {
@@ -123,8 +122,13 @@ const CreateAnimalIdentity = async (req, res) => {
 			console.log(err);
 			res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({Error: err});
 		}
-		Transactions.create({'id': payload.id, 'txHash': JSON.stringify(response.body)}).then((res) => {
-			res.status(HttpStatus.NO_CONTENT).send({success: JSON.parse(response.body)});	
+		const tx = JSON.parse(response.body).link.toString().toString().replace(config.sawtooth_rest_api + '/batch_statuses?id=', '');
+
+		Transactions.create({'id': payload.id, 'txhash': tx.toString()}).then((response) => {
+			res.status(HttpStatus.NO_CONTENT).send({success: JSON.parse(response.body)})
+		}).catch((err) => {
+			console.log(err);
+			res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({Error: err});
 		})
 	});
 }

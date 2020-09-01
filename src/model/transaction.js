@@ -16,22 +16,26 @@ var Transactions = global.db.define('transactions', {
         primaryKey: true ,
         allowNull:false
     },
-    txHash: {
+    txhash: {
         type: Sequelize.TEXT
     },
+    createdAt: Sequelize.DATE,
+    updatedAt: Sequelize.DATE,
 }, {
-    timestamps: true
-});
+    timestamps: true,
+    underscored: true,
+    freezeTableName: true
+  });
 
 module.exports = {
     Transactions: Transactions
 };
 
-global.db.authenticate().then((err) => {
+global.db.authenticate().then(() => {
     console.log('Connection to database could be established successfully.');
-    global.db.sync().done(() => {
-    console.log('DB Synced !');
-  });
+    global.db.sync().then(() => {
+        console.log('db sync');        
+    })
 }).catch((err) => {
     console.error('Unable to connect to the database:', err);
 });
