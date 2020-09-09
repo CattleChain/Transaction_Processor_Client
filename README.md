@@ -1,54 +1,55 @@
-<!-- # FIWARE-IOTA web service
+# Cattlechain Transacation Processor Client
 
-[![Build Status](https://travis-ci.org/singhhp1069/FIWARE-IOTA-SERVICE.svg?branch=master)](https://travis-ci.org/singhhp1069/FIWARE-IOTA-SERVICE)
-[![dependencies Status](https://img.shields.io/david/singhhp1069/FIWARE-IOTA-SERVICE)](https://img.shields.io/david/singhhp1069/FIWARE-IOTA-SERVICE)
-[![devDependencies Status](https://img.shields.io/david/dev/singhhp1069/FIWARE-IOTA-SERVICE)](https://img.shields.io/david/dev/singhhp1069/FIWARE-IOTA-SERVICE)
+[![Build Status](https://api.travis-ci.com/CattleChain/Transaction_Processor_Client.svg?token=AyxbT6xSu5zpxMuneAWd&branch=master)](https://travis-ci.com/github/CattleChain/Transaction_Processor_Client)
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 
 # Background
-This api service is builded around [FIWARE-IOTA library]()
-
-
-# Docker
-```sh
-$ docker pull singhhp10691/fiwareiota:latest && docker run -p 4000:4000 singhhp10691/fiwareiota
-```
-# Build locally using Docker
-```sh
-$ git clone https://github.com/singhhp1069/FIWARE-IOTA-SERVICE.git && cd FIWARE-IOTA-SERVICE
-$ docker build -t fiware-iota-service . && docker run -p 4000:4000 fiware-iota-service
-```
-#  Build locally
-```sh
-$ git clone https://github.com/singhhp1069/FIWARE-IOTA-SERVICE.git
-$ FIWARE-IOTA-SERVICE
-$ npm install
-$ npm start
-```
+Cattlechain Transaction Proccessor Client responsible to submit the data to the Sawtooth Network using API/ Context Broker Subscriptions.
+DBSync also be done with any ORM DB.
 
 # Configuration
 **config can be found in src/config/index.js**
 ```sh
-export default {
+	// basic config
 	env: process.env.NODE_ENV || 'development',
-	server: {
-		port: process.env.PORT || 4000,
-		provider: process.env.IOTA_PROVIDER || 'https://nodes.devnet.thetangle.org:443',
-		tcpProvider: process.env.IOTA_ZMQ_PROVIDER || 'tcp://zmq.devnet.iota.org:5556'
+	port: process.env.PORT || 3000,
+	db_sync: process.env.DB_SYNC || 'false',
+
+	// sawtooth config
+	sawtooth_rest_api: process.env.SAWTOOTH_REST_ENDPOINT || "http://localhost:8008",
+	transaction_family: process.env.TP_FAMILY || "CattleChain",
+	family_version: process.env.TP_VERSION || "0.0.2",
+	family_namespace: process.env.TP_NAMESPACE || "ebc4f9",
+
+	//event list
+	payload_type: {
+		// animal
+		CREATE_ANIMAL_IDENTIY: 'create_animal_identity',
+		UPDATE_ANIMAL_IDENTITY: 'update_animal_identity',
+		ANIMAL_MONITORING_EVENT: 'animal_monitor_event',
+		ANIMAL_WELFARE_INDICATOR: 'animal_welfare_indicator',	
+		// dairy
+		CREATE_DAIRY_IDENTITY: 'create_farm_identity',
+		UPDATE_DAIRY_IDENTITY: 'update_farm_identity',
+		DAIRY_MONITORING_EVENT: 'dairy_monitor_event',
+		DAIRY_WELFARE_INDICATOR: 'dairy_welfare_indicator',
 	},
-	mqtt: {
-		port: process.env.MQTT_SERVER_PORT || 1883
-	}
-};
+
+	// db cofig
+	db_name : process.env.DB_NAME || 'cattlechain',
+    db_username : process.env.DB_USER || 'postgres',
+	db_password : process.env.DB_PASSWORD || 'root',
+	db_host : process.env.DB_HOST || 'localhost',
+	db_dialect : process.env.DB_DIALECT || 'postgres',
 ```
 # Api End-Points
 
-1.**Status**
+1.**version**
 ----
 * **URL**
-  * `/status`
+  * `/version`
 * **Method:**
   * `GET`
 * **Header:**
@@ -57,39 +58,15 @@ export default {
 * **Success Response:**
  ```json
 {
-    "appName": "IRI Devnet",
-    "appVersion": "1.8.1",
-    "jreAvailableProcessors": 8,
-    "jreFreeMemory": 804894984,
-    "jreVersion": "1.8.0_191",
-    "jreMaxMemory": 10498867200,
-    "jreTotalMemory": 1856323753,
-    "latestMilestone": "X9FQGTJPFSVTPYLGBGYOIQTOIMKUDKVLOTLCS9HWUXXWLFCPQKKKUCESFWMYUVCQFYOOWWJSPZUI9E999",
-    "latestMilestoneIndex": 1415884,
-    "latestSolidSubtangleMilestone": "X9FQGTJPFSVTPYLGBGYOIQTOIMKUDKVLOTLCS9HWUXXWLFCPQKKKUCESFWMYUVCQFYOOWWJSPZUI9E999",
-    "latestSolidSubtangleMilestoneIndex": 1415884,
-    "milestoneStartIndex": 434527,
-    "lastSnapshottedMilestoneIndex": 434525,
-    "neighbors": 8,
-    "packetsQueueSize": 0,
-    "time": 1574863927661,
-    "tips": 4285,
-    "transactionsToRequest": 0,
-    "features": [
-        "loadBalancer",
-        "snapshotPruning",
-        "RemotePOW",
-        "testnet"
-    ],
-    "coordinatorAddress": "EQQFCZBIHRHWPXKMTOLMYUYPCN9XLMJPYZVFJSAY9FQHCCLWTOLLUGKKMXYFDBOOYFBLBI9WUEILGECYM",
-    "duration": 0
+    "version": "0.0.1",
+    "name": "cattlechainclient"
 }
 ```
 
-2.**Set Provider**
+2.**Create Account**
 ----
 * **URL**
-  * `/provider`
+  * `/account`
 * **Method:**
   * `POST`
 * **Header:**
@@ -98,16 +75,21 @@ export default {
 * **Request Body** *
  ```json
 {
-	"provider": "https://nodes.devnet.thetangle.org:443"
+    "legalId": "dsdsdsd1"
 }
  ```
-
 * **Success Response: Status 200**
+* **Response Body** *
+ ```json
+{
+    "account": "'ebc4f9'a48b85415f13737a104ec05b986c89f1d59ebe7aab7b610bde17a22618f24c25"
+}
+ ```
 
-3.**Set ZMQProvider**
+3.**Context Broker Subscription**
 ----
 * **URL**
-  * `/zmqprovider`
+  * `/notify`
 * **Method:**
   * `POST`
 * **Header:**
@@ -116,16 +98,91 @@ export default {
 * **Request Body** *
  ```json
 {
-	"provider": "tcp://zmq.devnet.iota.org:5556"
+    "data": [
+        {
+  "id": "urn:ngsi-ld:Animal:ca3f1295-500c-4aa3-b745-12122212212",
+  "type": "Animal",
+  "species": {
+    "value": "sheep"
+  },
+  "relatedSource": {
+    "value": [
+      {
+        "application": "urn:ngsi-ld:AgriApp:72d9fb43-53f8-4ec8-a33c-fa931360259a",
+        "applicationEntityId": "app:sheep1"
+      }
+    ]
+  },
+  "legalId": {
+    "value": "ES142589fdffd652140"
+  },
+  "birthdate": {
+    "type": "DateTime",
+    "value": "2017-01-01T01:20:00Z"
+  },
+  "dateModified": {
+    "type": "DateTime",
+    "value": "2017-05-04T12:30:00Z"
+  },
+  "sex": {
+    "value": "female"
+  },
+  "breed": {
+    "value": "Merina"
+  },
+  "calvedBy": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Animal:aa9f1295-425c-8ba3-b745-b653097d5a87"
+  },
+  "siredBy": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Animal:aa9f1295-425c-8ba3-b745-b653097d5a87"
+  },
+  "location": {
+    "type": "geo:json",
+    "value": {
+      "type": "Point",
+      "coordinates": [-4.754444444, 41.640833333]
+    }
+  },
+  "weight": {
+    "value": 65.3
+  },
+  "ownedBy": {
+    "type": "Relationship",
+    "value": "http://person.org/leon"
+  },
+  "locatedAt": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:AgriParcel:1ea0f120-4474-11e8-9919-672036642081"
+  },
+  "phenologicalCondition": {
+    "value": "adult"
+  },
+  "reproductiveCondition": {
+    "value": "inCalf"
+  },
+  "healthCondition": {
+    "value": "healthy"
+  },
+  "fedWith": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:FEED:1ea0f120-4474-11e8-9919-0000000081"
+  },
+  "welfareCondition": {
+    "value": "adequate"
+  }
+}
+    ]
 }
  ```
 
-* **Success Response: Status 200**
+* **Success Response: Status 204**
 
-4.**Send Transaction**
+4.**Create Animal Identity**
 ----
 * **URL**
-  * `/transaction`
+  * `/CreateAnimalIdentity`
 * **Method:**
   * `POST`
 * **Header:**
@@ -134,145 +191,106 @@ export default {
 * **Request Body** *
  ```json
 {
-	"address": "ETJF9MZSDYTESOBJUANBCIYEVREVDNPNEJWEZDSBPUKTGOZKBNFD9DYQACJZW9EGQQHANBDGHJNUXTYVD",
-	"seed": "GUVMYGYLYVSKJ9AOPWJXB9V9WXEBUREGEDKJUPPMUQ9SXCYFGFXACEODXUVILVBMUZUDEJFPDSRXFSGNN",
-	"data": {
-			"message" : "test transaction"
-		}
+  "id": "urn:ngsi-ld:Animal:ca3f1295-500c-4aa3-b745-12122212212",
+  "type": "Animal",
+  "species": {
+    "value": "sheep"
+  },
+  "relatedSource": {
+    "value": [
+      {
+        "application": "urn:ngsi-ld:AgriApp:72d9fb43-53f8-4ec8-a33c-fa931360259a",
+        "applicationEntityId": "app:sheep1"
+      }
+    ]
+  },
+  "legalId": {
+    "value": "ES142589fdffd652140"
+  },
+  "birthdate": {
+    "type": "DateTime",
+    "value": "2017-01-01T01:20:00Z"
+  },
+  "dateModified": {
+    "type": "DateTime",
+    "value": "2017-05-04T12:30:00Z"
+  },
+  "sex": {
+    "value": "female"
+  },
+  "breed": {
+    "value": "Merina"
+  },
+  "calvedBy": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Animal:aa9f1295-425c-8ba3-b745-b653097d5a87"
+  },
+  "siredBy": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:Animal:aa9f1295-425c-8ba3-b745-b653097d5a87"
+  },
+  "location": {
+    "type": "geo:json",
+    "value": {
+      "type": "Point",
+      "coordinates": [-4.754444444, 41.640833333]
+    }
+  },
+  "weight": {
+    "value": 65.3
+  },
+  "ownedBy": {
+    "type": "Relationship",
+    "value": "http://person.org/leon"
+  },
+  "locatedAt": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:AgriParcel:1ea0f120-4474-11e8-9919-672036642081"
+  },
+  "phenologicalCondition": {
+    "value": "adult"
+  },
+  "reproductiveCondition": {
+    "value": "inCalf"
+  },
+  "healthCondition": {
+    "value": "healthy"
+  },
+  "fedWith": {
+    "type": "Relationship",
+    "value": "urn:ngsi-ld:FEED:1ea0f120-4474-11e8-9919-0000000081"
+  },
+  "welfareCondition": {
+    "value": "adequate"
+  }
 }
  ```
-
+* **Success Response: Status 201**
 * **Success Response** *
  ```json
-[
-    {
-        "hash": "9TEIVRUMBQBIJSTCVUWGOBVGLKORFSXSXDSLDA9LDZWQMCIRDEQCLJGFWQCQID9XHLSMRGNSMZ9IZI999",
-        "signatureMessageFragment": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-        "address": "ETJF9MZSDYTESOBJUANBCIYEVREVDNPNEJWEZDSBPUKTGOZKBNFD9DYQACJZW9EGQQHANBDGHJNUXTYVD",
-        "value": 0,
-        "obsoleteTag": "BA9999999999999999999999999",
-        "timestamp": 1574864218,
-        "currentIndex": 0,
-        "lastIndex": 0,
-        "bundle": "GDCJCSKRKAUFEXEZUQGR9TFTD99QJUOC9XZZIUGAXUZSAQKDNKJCRLWIIVIKONKK9XZ9KVSHPCBTKYOVX",
-        "trunkTransaction": "VKUMRDSQGZDGDSFNOG9KIJY9WMRJBOHEOYOU9SODGMTSMCFDJHDUQJNESQDKTPHARKURXNOBURKLRG999",
-        "branchTransaction": "LJRKLGKUVNVHELUIOSFDPXIZSCKIHUGUZZNYRZVAGMNMMHTNYDCTYOKWPKALGDX9BTJVOTPIDGFS99999",
-        "tag": "BA9999999999999999999999999",
-        "attachmentTimestamp": 1574864219432,
-        "attachmentTimestampLowerBound": 0,
-        "attachmentTimestampUpperBound": 3812798742493,
-        "nonce": "OGGITGZTOSZU9YPWYSZXNCZ9IGQ"
-    }
-]
+{
+    "txHash": "177c800111f74599405fa933c0817270fe59f903a65c80268dbb428a1459ec6836a4e2a4ff818fd167388f2118ee2c281338175aa6f1aca53f898633c7b0b69b"
+}
  ```
  
- 5.**Fetch Transaction**
+ 5.**Get All Transactions from ORM (if db_sync is true)**
 ----
 * **URL**
-  * `/transaction/:hash`
+  * `/transactions`
 * **Method:**
   * `GET`
 * **Header:**
   * `Content-Type:application/json`
 
-* **Success Response** *
- ```json
-[
-    {
-        "hash": "9TEIVRUMBQBIJSTCVUWGOBVGLKORFSXSXDSLDA9LDZWQMCIRDEQCLJGFWQCQID9XHLSMRGNSMZ9IZI999",
-        "signatureMessageFragment": "999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999",
-        "address": "ETJF9MZSDYTESOBJUANBCIYEVREVDNPNEJWEZDSBPUKTGOZKBNFD9DYQACJZW9EGQQHANBDGHJNUXTYVD",
-        "value": 0,
-        "obsoleteTag": "BA9999999999999999999999999",
-        "timestamp": 1574864218,
-        "currentIndex": 0,
-        "lastIndex": 0,
-        "bundle": "GDCJCSKRKAUFEXEZUQGR9TFTD99QJUOC9XZZIUGAXUZSAQKDNKJCRLWIIVIKONKK9XZ9KVSHPCBTKYOVX",
-        "trunkTransaction": "VKUMRDSQGZDGDSFNOG9KIJY9WMRJBOHEOYOU9SODGMTSMCFDJHDUQJNESQDKTPHARKURXNOBURKLRG999",
-        "branchTransaction": "LJRKLGKUVNVHELUIOSFDPXIZSCKIHUGUZZNYRZVAGMNMMHTNYDCTYOKWPKALGDX9BTJVOTPIDGFS99999",
-        "tag": "BA9999999999999999999999999",
-        "attachmentTimestamp": 1574864219432,
-        "attachmentTimestampLowerBound": 0,
-        "attachmentTimestampUpperBound": 3812798742493,
-        "nonce": "OGGITGZTOSZU9YPWYSZXNCZ9IGQ"
-    }
-]
- ```
-6.**Create MAM Transaction**
+
+ 6.**Get Transaction by id from ORM (if db_sync is true)**
 ----
 * **URL**
-  * `/mam`
+  * `/transaction/:id`
 * **Method:**
-  * `POST`
+  * `GET`
 * **Header:**
   * `Content-Type:application/json`
 
-| Param  | Type   | Description                                        |
-| ------ | ------ | -------------------------------------------------- |
-| data   | string | data to be transfer                                |
-| mode   | string | mode could be either public or restricted          |
-| secret | string | secret of the data in case of restricted mode only |
-
-* **Request Body** *
- ```json
-{
-	"data": "testing",
-	"mode": "restricted",
-	"secret": "secret"
-}
- ```
-
-* **Success Response** *
- ```json
-[
-    {
-        "hash": "VT9FBQHVYUFBVHNSFKWTQWUXHVFGPQBRHCNABRKUCYQMFDU9VVOIEPYNYXAJHFFKUTKZZGNVQNPFYD999",
-        "signatureMessageFragment": "AZB9HBURFAWGFCA9KMBOPZTHHNWNLGESOTBFJADYBYXJOHKBWFOJGTATHHKWGSLFDLUFQVFVNI99ZAPOVCWAPWXZPCGIUFDVSJYQTNUHSC9BFBQIYRJPSWVIRAMRKFN9MDREWPXQQNUAVIZPSYAGSCLOWJYGUDSKT9JHRWUDDEFZVWBPGD9ZDBSSTLKBBQV9DMVHKMMEYLL9NICKDVDFNSXUZ9KRYDLPXLAQGDLFAA9YLGRGFFJCLRMM9KUSWSKHXNAXQOFMEUOZBOYCOYVUMJPJJLJIRZRHLBLCDNHSACXYKZJNVOASPDHAJYPOVM9DRALJVWXPJSLKXIQUNBONEMXTNOYMOYLWPAJDYEDCJGTWWCAMOOKRMFCTVIHSWOCJQIGIQGWIHAOLHZSQSVVUSXTNVFFSQYBVQWICELBKTVZESEJWEHLLBK9LVFGUJTJNENQVAKEYLVFB9OJPOXWEAQGVUVFIERF9JVDEHBHCMYOXLCBNESGPIEZAFLVHJFMLDMRXIROISSVWGZSXPOTALZWBVSGC9FJUARPHY9TASMC9QTHJHQOVVQMRXVXHFMHA9A99OXJJAIQDIDHVVQKZHFRXJNYIQMNLUJHJ9FYLDOVCGANEZERMNVUGFYFBJWWIAYNDHCCDAYMDJBJQUSFXFPYBUPPMHETZVRYHMREHKYVJA9MNFXE9GFUGBMYLKLHYQHOHYUQDMSQUQAXZBNWXHTDZLPVXLXKRBNBDGBAEYEEICRBEWRWTMWVGTWHXWKOJHFMXCVWYWURBHMAEPU9I9QPBA9RNJCQAQDMRDVGYYAVESSQCRGIQFPHQHIDWKPUZXKQJWJUT9KYGP9JCDJLSAHUBANJIRPAFVVQGOWNCQEPV9JTKZFCLELRVEIBNGKJWCLXIWDUBHPCDVMRNBICFCUNXMPSJFYBCMUCAIVCZTJCMOKYTPCKLQLJFWLPR9XITUEASHTMVHDSHPNLPHFLAGBKQI9EX9XHNAKPWNQGSDGRZBGGOXAJLWQWGSMAXVMHYJXSOLXRABASBFNRAYBV9MRDQWEUSHHUWUAGCLRBVRYW9ELQFDTJOOQ9WFXZFMEFYCTDTFEIAH9ULSIONGKFQZR9LHLISEQZCEECYVYSBBCTXMSMMGAU9TZLDFOLGWALBIHTUIFTKZACTZTTMMFBKWQDWWZRCWPABGOGKTCSXDRSXJWXYTKGTOMXAGPQIYDMOLDBYCHSLOQQODHRXGDDFEUOEKWCPPBMQYWALGZHOVKNLOOBZEEFMO9HPULEYUTJNJRWOYYHVRUKACQMJQKQOGDDZGSBYTHF9EMQNCZEEJZPLBBCXBTAMSCXWCZISAKKJJLPKOZKHTBULGGXENNDH9AJQQKDWITBB9CI9LWKAWKOEIVRRDLBEXFEGCDPWUNKAULHEMKEQXIYE99NGEBQGGPXGPZNFSPZTBYFZQCDSNTXOHNQHNWPENVWQPXICALBZXFZBUKZSIUSGLTLKSLPHJWTJLKJWRQARZIQFB9CTVTOTLBCCQVIXBTQGRETHRHNGXHGPUS9VVJLWIBXGMPLRLRNISRPXDWJ9PLZFU9OFFT9CHWQAVWUAYGYMZCNNQOYKXPIWDMYMZVWBOEZNYABUCSJPIKPIBIVYERTANFYVPICSGYTQXJKA9CLGBMCRBBHWDXVERDKYPJFZMIUGGGRNVAENXJMFCIBZZICLJVQGQVUCCCJARIXCCYJZQXGYYEO9VJVPAORMAHQRAXSNYTMBGQCCIKVFUVGLLEVDZXKNDNSVIELGCRLJRDNVOSEDLZQBFZHZMOQBRWQE9RPWCZ9ZFRQGJIEEUUAVAI9VGHZICULKPLYTDHGDQDJRATHCONNL9NFTLGOZPRP9FRZQWQGSNPRETMPZWVTTXDIG9JNKOHQVCELIPZSQDOPOYQZLPL9OTVJMWY9BQB9ZOJRGLPCVNCGZAVKXIWLLCFWA9AUVMSYWYATVYPQXLUH9IBAGHLXQPMOLC9UHDNTFLHPIEWRYJWNOJIZPFCZ99OJFESHAGXQFKEZTIHPV9PWDCAHXVPALDZJUB9HKPFDETOFKINWVKWRQNITSZEZPGYZTPFDYHWXRWOZOAOZFSGHWUZXMAHXNSDPFKXQNRLFEPYKQJCUIWYARNGOZFDTFAJYSGDMFRDX9MMLYSWGBSTVMXKIHADSBFBDDVBHU9ZR",
-        "address": "ANNIDTA9NJECGUMFKQUCBELQQQVVOAPSQNSBXWYWYHOVZOAHBAXVCQQZLEKCFJCTDWKAGQVZXHAJRLOOQ",
-        "value": 0,
-        "obsoleteTag": "OA9999999999999999999999999",
-        "timestamp": 1574862139,
-        "currentIndex": 0,
-        "lastIndex": 2,
-        "bundle": "QJJ99VLDSHHJJXVDHPDYHLNG9DPDPIDQURPLIZAHLBBWOKIW9KD9ENXKXRJNRNUGIAU9YJUAIKGGXZ9DC",
-        "trunkTransaction": "RQUFBYMEHAA9JHBQIJKTXPQZEVEWGPIKOAZYVVPTEZZYOHVNGVCLPVZAWNANWQSPVZTYAHNTPHZGEJ999",
-        "branchTransaction": "HFMBCNWLPHZADUWCPYN9JEQBHGRIYJBYFEVTRQMPSHGLAGQIKEU9NPTWFESBNJFFNEVDOTZHBRVB9W999",
-        "tag": "OA9999999999999999999999999",
-        "attachmentTimestamp": 1574862140134,
-        "attachmentTimestampLowerBound": 0,
-        "attachmentTimestampUpperBound": 3812798742493,
-        "nonce": "9JGG9TKDFMCUUUOIOEYXIQAUPGJ"
-    }
-]
- ```
  
- 7.**Fetch MAM Transaction**
-----
-* **URL**
-  * `/mam/fetch`
-* **Method:**
-  * `POST`
-* **Header:**
-  * `Content-Type:application/json`
-
-| Param  | Type   | Description                                        |
-| ------ | ------ | -------------------------------------------------- |
-| hash   | string | hash to be fetched                                 |
-| mode   | string | mode could be either public or restricted          |
-| secret | string | secret of the data in case of restricted mode only |
-
-* **Request Body** *
- ```json
-{
-	"hash": "VT9FBQHVYUFBVHNSFKWTQWUXHVFGPQBRHCNABRKUCYQMFDU9VVOIEPYNYXAJHFFKUTKZZGNVQNPFYD999",
-	"mode": "restricted",
-	"secret": "secret"
-}
- ```
-
-* **Success Response** *
- ```json
-{
-    "result": "testing"
-}
- ``` -->
+ 

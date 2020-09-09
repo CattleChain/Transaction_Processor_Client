@@ -1,14 +1,20 @@
-const { CreateAnimalIdentity, AddAnimalEvent, status } = require('../controllers/index');
-const { wrapAsync } = require('../utils/index');
-const { createAccount } = require('../controllers/accounts');
-const { getAllTransactions, getTranactionById } = require('../controllers/transactions');
+import express from 'express';
+import NotificationHandlerController from '../controllers/notify';
+import AnimalController from '../controllers/animal';
+import AccountHandlerController from '../controllers/accounts';
+import TransactionHandlerController from '../controllers/transactions';
 
+const router = express.Router();
 
-module.exports = api => {
-api.route('/status').get(wrapAsync(status));
-api.route('/account').post(wrapAsync(createAccount));
-api.route('/create').post(wrapAsync(CreateAnimalIdentity));
-api.route('/transactions').get(wrapAsync(getAllTransactions));
-api.route('/transactions/:id').get(wrapAsync(getTranactionById));
-// api.route('/add').post(wrapAsync(AddAnimalEvent));
-};
+router.get('/version', NotificationHandlerController.getVerionHandler.bind(NotificationHandlerController));
+
+router.post('/notify', NotificationHandlerController.notificationHandler.bind(NotificationHandlerController));
+
+router.post('/CreateAnimalIdentity', AnimalController.CreateAnimalIdentityRequest.bind(AnimalController));
+
+router.post('/account', AccountHandlerController.createAccount.bind(AccountHandlerController));
+
+router.get('/transactions', TransactionHandlerController.getAllTransactions.bind(TransactionHandlerController));
+router.get('/transaction/:id', TransactionHandlerController.getTransactionById.bind(TransactionHandlerController));
+
+module.exports = router;

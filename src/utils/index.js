@@ -1,19 +1,38 @@
+import { version, name } from '../../package.json';
 const { animalIdentity_pb } = require('cattlechain-proto');
 
-
-function wrapAsync(fn) {
-	return function(req, res, next) {
-		fn(req, res, next).catch(e => {
-			next(e);
-		});
-	};
+/**
+ * Returns version information about this concrete instance of the STH component
+ * @return {object} A JSON-formatted object including the version information
+ */
+const getVersion = () => {
+    const message = {};
+    if (version) {
+            message.version = version;
+    }
+    if (Object.getOwnPropertyNames(message).length === 0) {
+        message.version = 'No version information available';
+    }
+    return message;
 }
 
-function isNotEmpty(value) {
+const getName = () => {
+    const message = {};
+    if (name) {
+            message.name = name;
+    }
+    if (Object.getOwnPropertyNames(name).length === 0) {
+        message.name = 'No name information available';
+    }
+    return message;
+}
+
+
+const isNotEmpty = (value) => {
 	return typeof value == 'string' && value.trim() || typeof value !== 'undefined' || value !== null;
 }
 
-function animalSpecies(str) {
+const animalSpecies = (str) => {
 	if(str == 'cow') {
 		return animalIdentity_pb.AnimalIdentity.Species.DAIRY_CATTLE;
 	}else if(str == 'bull') {
@@ -29,6 +48,9 @@ function animalSpecies(str) {
 	}
 }
 
-exports.wrapAsync = wrapAsync;
-exports.isNotEmpty = isNotEmpty;
-exports.animalSpecies = animalSpecies;
+export {
+    getVersion,
+	getName,
+	isNotEmpty,
+	animalSpecies,
+}

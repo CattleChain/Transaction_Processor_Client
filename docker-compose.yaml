@@ -10,17 +10,23 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - SAWTOOTH_REST_ENDPOINT=http://46.17.108.38:8008
+      - SAWTOOTH_REST_ENDPOINT=http://localhost:8008
       - TP_FAMILY='CattleChain'
       - TP_VERSION='0.0.2'
-      - TP_NAMESPACE='08908d'
+      - TP_NAMESPACE='ebc4f9'
       - DB_NAME=cattlechain
       - DB_USER=postgres
       - DB_PASSWORD=root
       - DB_HOST=postgres
       - DB_PORT=5432
+      - DB_SYNC=true
+      - DB_DIALECT=postgres
     depends_on:
       - postgres
+    networks:
+      - default
+
+
 
 #postgres
   postgres:
@@ -32,3 +38,13 @@ services:
       - POSTGRES_DB=cattlechain
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
+    networks:
+      - default
+
+
+# network
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.18.1.0/24

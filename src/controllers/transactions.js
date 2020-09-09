@@ -1,26 +1,37 @@
 const { Transactions } = require('../model/transaction');
 const HttpStatus = require('http-status-codes');
+const { config } = require('../config/index');
 
-const getAllTransactions = async (req,  res)  => {
-    Transactions.findAll().then((result) => {
-        res.status(HttpStatus.OK).send({ result : result});
-    }).catch((err) => {
-        res.status(HttpStatus.BAD_REQUEST).send({error: err});
-    })
-}
+class TransactionHandlerController {
 
-const getTranactionById = async (req,  res)  => {
-    if(req.params.id === null || req.params.id === '') {
-        res.status(HttpStatus.BAD_REQUEST).send({error: 'param id is missing'}); 
+    async getAllTransactions(request, response, next) {
+        if (config.db_sync == 'true') {
+            Transactions.findAll().then((result) => {
+                return response.status(HttpStatus.OK).send({ result: result });
+            }).catch((err) => {
+                return response.status(HttpStatus.BAD_REQUEST).send({ error: err });
+            })
+        } else {
+            return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: 'DB Sync is not enabled' });
+        }
+
     }
-    Transactions.findOne({where: {id: req.params.id}}).then((result) => {
-        res.status(HttpStatus.OK).send({ result : result});
-    }).catch((err) => {
-        res.status(HttpStatus.BAD_REQUEST).send({error: err});
-    })
+
+    async getTransactionById(request, response, next) {
+        if (config.db_sync == 'true') {
+            if (request.params.id === null || request.params.id === '') {
+                return response.status(HttpStatus.BAD_REQUEST).send({ error: 'param id is missing' });
+            }
+            Transactions.findOne({ where: { id: request.params.id } }).then((result) => {
+                return response.status(HttpStatus.OK).send({ result: result });
+            }).catch((err) => {
+                return response.status(HttpStatus.BAD_REQUEST).send({ error: err });
+            })
+
+        } else {
+            return response.status(HttpStatus.INTERNAL_SERVER_ERROR).send({ error: 'DB Sync is not enabled' });
+        }
+    }
 }
 
-module.exports = {
-    getAllTransactions,
-    getTranactionById,
-} 
+export default new TransactionHandlerController();

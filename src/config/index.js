@@ -1,16 +1,39 @@
 const config = {
+
+	// basic config
 	env: process.env.NODE_ENV || 'development',
 	port: process.env.PORT || 3000,
+	db_sync: process.env.DB_SYNC || 'false',
+
+	// sawtooth config
 	sawtooth_rest_api: process.env.SAWTOOTH_REST_ENDPOINT || "http://localhost:8008",
 	transaction_family: process.env.TP_FAMILY || "CattleChain",
 	family_version: process.env.TP_VERSION || "0.0.2",
 	family_namespace: process.env.TP_NAMESPACE || "ebc4f9",
+
+	//event list
 	payload_type: {
-		create_animal_identity: "create_animal_identity",
-		add_animal_event: "add_animal_event"
-	}
+		// animal
+		CREATE_ANIMAL_IDENTIY: 'create_animal_identity',
+		UPDATE_ANIMAL_IDENTITY: 'update_animal_identity',
+		ANIMAL_MONITORING_EVENT: 'animal_monitor_event',
+		ANIMAL_WELFARE_INDICATOR: 'animal_welfare_indicator',	
+		// dairy
+		CREATE_DAIRY_IDENTITY: 'create_farm_identity',
+		UPDATE_DAIRY_IDENTITY: 'update_farm_identity',
+		DAIRY_MONITORING_EVENT: 'dairy_monitor_event',
+		DAIRY_WELFARE_INDICATOR: 'dairy_welfare_indicator',
+	},
+
+	// db cofig
+	db_name : process.env.DB_NAME || 'cattlechain',
+    db_username : process.env.DB_USER || 'postgres',
+	db_password : process.env.DB_PASSWORD || 'root',
+	db_host : process.env.DB_HOST || 'localhost',
+	db_dialect : process.env.DB_DIALECT || 'postgres',
 };
 
 module.exports = {
 	config
 }
+
