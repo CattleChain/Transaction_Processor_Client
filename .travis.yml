@@ -6,5 +6,5 @@ jobs:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - docker build -t tp_client .
       - docker images
-      - docker tag tp_client $DOCKER_USERNAME/tp_client
+      - docker tag tp_client $  /tp_client
       - docker push $DOCKER_USERNAME/tp_client
