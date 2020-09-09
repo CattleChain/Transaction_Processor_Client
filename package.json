@@ -27,13 +27,13 @@
 	"author": "Har Preet Singh <harpreet.singh@fiware.org>",
 	"license": "MIT",
 	"bugs": {
-		"url": "http://"
+		"url": "https://github.com/CattleChain/Transaction_Processor_Client/issues"
 	},
-	"homepage": "",
+	"homepage": "https://github.com/CattleChain/Transaction_Processor_Client",
 	"dependencies": {
 		"bcrypt": "^3.0.7",
 		"body-parser": "^1.18.3",
-		"cattlechain-proto": "git+https://c775269f59d8f78cb46c0756a9d242a3a5076e70:x-oauth-basic@github.com/singhhp1069/FIWARE_Cattlechain_Protos.git",
+		"cattlechain_protos": "0.0.4",
 		"cbor": "^5.0.2",
 		"chalk": "^2.4.1",
 		"compression": "^1.7.3",

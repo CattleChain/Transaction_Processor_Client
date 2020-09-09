@@ -1,5 +1,5 @@
 import { version, name } from '../../package.json';
-const { animalIdentity_pb } = require('cattlechain-proto');
+const { animalIdentity_pb } = require('cattlechain_protos');
 
 /**
  * Returns version information about this concrete instance of the STH component

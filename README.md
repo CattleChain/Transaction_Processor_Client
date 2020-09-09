@@ -1,6 +1,6 @@
 # Cattlechain Transacation Processor Client
 
-[![Build Status](https://api.travis-ci.com/CattleChain/Transaction_Processor_Client.svg?token=AyxbT6xSu5zpxMuneAWd&branch=master)](https://travis-ci.com/github/CattleChain/Transaction_Processor_Client)
+[![Build Status](https://travis-ci.com/CattleChain/Transaction_Processor_Client.svg?token=AyxbT6xSu5zpxMuneAWd&branch=master)](https://travis-ci.com/github/CattleChain/Transaction_Processor_Client)
 [![Support badge](https://nexus.lab.fiware.org/repository/raw/public/badges/stackoverflow/fiware.svg)](https://stackoverflow.com/questions/tagged/fiware)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
