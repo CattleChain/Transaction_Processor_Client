@@ -21,7 +21,8 @@
 		"npm",
 		"node",
 		"javascript",
-		"iota",
+		"sawtooth",
+		"blockchain",
 		"fiware"
 	],
 	"author": "Har Preet Singh <harpreet.singh@fiware.org>",
@@ -33,7 +34,7 @@
 	"dependencies": {
 		"bcrypt": "^3.0.7",
 		"body-parser": "^1.18.3",
-		"cattlechain_protos": "0.0.5",
+		"cattlechain_protos": "0.0.7",
 		"cbor": "^5.0.2",
 		"chalk": "^2.4.1",
 		"compression": "^1.7.3",
